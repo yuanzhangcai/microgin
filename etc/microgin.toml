@@ -1,0 +1,30 @@
+#通用配置文件
+[common]
+mode = "gin"  # 程序运行模式："micro"-微服务模式启动  "gin"-gin web服务启动，
+
+[gin] # 仅在mode=gin时，参数有效
+address = "0.0.0.0:8080" # gin web服务启动地址
+
+[micro] # 仅在mode=micro时，参数有效
+service_regisger = "mdns" # 微服务注册方式：etcd\mdns
+
+[log] # 日志相关配置
+filedir = "/data/logs/" #日志文件路径
+maxdays = 15 # 日志最大保留天数
+level = 4 #日志保存的时候的级别，默认是 Info 级别
+
+[db]
+dzsns = ""
+write_log = false # 数据库操作是否写日志。正式环境默认不写日志
+
+[redis]
+server = ""
+password = ""
+prefix = "m_"
+
+[session]
+cookie_id = "PHPSESSID"
+prefix = "opensns_m_"
+
+[login]
+check_url = ""

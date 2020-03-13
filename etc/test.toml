@@ -1,0 +1,15 @@
+# 测试环境下专用的配置文件
+[log] # 日志相关配置
+filedir = "./logs/" #日志文件路径
+level = 5 #日志保存的时候的级别，默认是 Info 级别
+
+[db]
+dzsns = "root:root@(192.168.0.93:3306)/dzsns?parseTime=true&loc=Local&charset=utf8"
+write_log = true # 数据库操作是否写日志。
+
+[redis]
+host = "192.168.0.93:6378"
+password = "123456"
+
+[login]
+check_url = "http://10.0.0.93/m/index.php?s=/capi/check_login.html"
