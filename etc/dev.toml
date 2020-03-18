@@ -10,7 +10,7 @@ write_log = true # 数据库操作是否写日志。
 
 [redis]
 server = "127.0.0.1:6379"
-password = "zacyuan"
+password = "12345678"
 
 [login]
 check_url = "http://localhost:8889/m/index.php?s=/capi/check_login.html"

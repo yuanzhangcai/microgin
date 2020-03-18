@@ -22,60 +22,23 @@ import (
 	"github.com/yuanzhangcai/microgin/tools"
 )
 
-const (
-	// ConfigFile 通用配置文件路径
-	ConfigFile = "./etc/microgin.toml"
-
-	// ProdConfigFile 正式环境专有配置文件路径
-	ProdConfigFile = "./etc/prod.toml"
-
-	// TestConfigFile 测试环境专有配置文件路径
-	TestConfigFile = "./etc/test.toml"
-
-	// DevConfigFile 本地开发环境专用配置文件路径
-	DevConfigFile = "./etc/dev.toml"
-)
-
-var (
-	_commit    string // 最后一次提交的id
-	_buildtime string // 编译时间
-	_buildby   string // 编译人
-	_env       string // 程序运行环境
-	_version   string // 版本号
-)
-
 // InitConfig 载配置文件
-func InitConfig(filename string) {
-	// 加载配置文件
-	err := config.LoadFile(ConfigFile)
+func InitConfig() {
+	// 加载通用配置文件
+	filepath := common.CurrRunPath + "/etc/"
+	configFile := filepath + common.CurrRunFileName + ".toml"
+	err := config.LoadFile(configFile)
 	if err != nil {
-		logrus.Error("读取配置文件" + ConfigFile + "失败。")
+		logrus.Error("读取配置文件" + configFile + "失败。")
 		os.Exit(-1)
 	}
 
-	// 加载正式环境配置文件
-	err = config.LoadFile(ProdConfigFile)
+	// 加载通用配置文件
+	envFile := filepath + common.Env + ".toml"
+	err = config.LoadFile(envFile)
 	if err != nil {
-		logrus.Error("读取配置文件" + ProdConfigFile + "失败。")
+		logrus.Error("读取当前运行环境配置文件" + envFile + "失败。")
 		os.Exit(-1)
-	}
-
-	if _env == common.TestEnv {
-		// 加载测试环境配置文件
-		err := config.LoadFile(TestConfigFile)
-		if err != nil {
-			logrus.Error("读取配置文件" + TestConfigFile + "失败。")
-			os.Exit(-1)
-		}
-	}
-
-	if _env == common.DevEnv {
-		// 加载测试环境配置文件
-		err := config.LoadFile(DevConfigFile)
-		if err != nil {
-			logrus.Error("读取配置文件" + DevConfigFile + "失败。")
-			os.Exit(-1)
-		}
 	}
 
 	logrus.Info("mode = " + config.Get("common", "mode").String(""))
@@ -97,7 +60,7 @@ func InitLog() {
 		if os.IsNotExist(err) {
 			err = os.MkdirAll(logSetting.FileDir, 0755)
 			if err != nil {
-				fmt.Println("创建日志目录失败。")
+				fmt.Println("创建日志目录(" + logSetting.FileDir + ")失败。")
 				os.Exit(-1)
 			}
 		} else {
@@ -112,26 +75,27 @@ func InitLog() {
 }
 
 func init() {
-	if _env == "" {
-		// 如果编译时没有指定运行环境，则看运行是是否有加“--env=”参数
-		flag.StringVar(&_env, "env", "", "Running environment.")
-		flag.Parse()
+	// 如果编译时没有指定运行环境，则看运行是是否有加“--env=”参数
+	env := ""
+	flag.StringVar(&env, "env", "", "Running environment[dev test prod].")
+	flag.Parse()
+
+	if env != "" {
+		common.Env = env
 	}
 
-	// 设置版本信息
-	common.SetVersion(map[string]string{
-		"commit":    _commit,    // 最后一次提交的id
-		"buildtime": _buildtime, // 编译时间
-		"buildby":   _buildby,   // 编译人
-		"env":       _env,       // 程序运行环境
-		"version":   _version,   // 版本号
-	})
+	showInfo()
 
-	// 设置当前运行环境
-	common.Env = _env
+	if common.Env != common.DevEnv && common.Env != common.TestEnv && common.Env != common.ProdEnv {
+		fmt.Println("当前运行环境不正确。")
+		os.Exit(-1)
+	}
+
+	// 获取当前程序运行信息
+	common.GetRunInfo()
 
 	// 加载配置文件
-	InitConfig(ConfigFile)
+	InitConfig()
 
 	// 初始化log
 	InitLog()
@@ -148,8 +112,6 @@ func init() {
 		logrus.Error(err.Error())
 		os.Exit(-1)
 	}
-
-	showInfo()
 }
 
 func main() {
@@ -198,10 +160,11 @@ func main() {
 
 func showInfo() {
 	fmt.Println("=======================================================================")
-	fmt.Println("     build commit : " + _commit)
-	fmt.Println("     build time : " + _buildtime)
-	fmt.Println("     build user : " + _buildby)
-	fmt.Println("     version : " + _version)
-	fmt.Println("     run env : " + _env)
+	fmt.Println("     Version   : " + common.Version)
+	fmt.Println("     Env       : " + common.Env)
+	fmt.Println("     Commit    : " + common.Commit)
+	fmt.Println("     BuildTime : " + common.BuildTime)
+	fmt.Println("     BuildUser : " + common.BuildUser)
+	fmt.Println("     GoVersion : " + common.GoVersion)
 	fmt.Println("=======================================================================")
 }
