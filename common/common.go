@@ -3,15 +3,6 @@
 
 package common
 
-const (
-	// DevEnv 开发环境
-	DevEnv = "dev"
-	// TestEnv 测试环境
-	TestEnv = "test"
-	// ProdEnv 生产环境
-	ProdEnv = "prod"
-)
-
 // 日期格式化模版
 const (
 	Y      string = "2006"
@@ -26,5 +17,10 @@ const (
 	HI2    string = "1504"
 )
 
-// Env 用地保存当前程序运行环境类型
-var Env string
+var (
+	// CurrRunPath 当前运行程序所在目录
+	CurrRunPath string
+
+	// CurrRunFileName 当前运行程序文件名
+	CurrRunFileName string
+)

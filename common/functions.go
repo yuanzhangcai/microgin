@@ -10,10 +10,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"os"
+	"path"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/yuanzhangcai/microgin/errors"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
@@ -134,4 +139,30 @@ func CloneObject(value interface{}) interface{} {
 	}
 
 	return value
+}
+
+// GetFileNameWithoutSuffix 获取不带后缀文件名
+func GetFileNameWithoutSuffix(fullFilename string) string {
+	var filenameWithSuffix string
+	filenameWithSuffix = path.Base(fullFilename) //获取文件名带后缀
+
+	var fileSuffix string
+	fileSuffix = path.Ext(filenameWithSuffix) //获取文件后缀
+
+	var filenameOnly string
+	filenameOnly = strings.TrimSuffix(filenameWithSuffix, fileSuffix) //获取文件名
+	return filenameOnly
+}
+
+// GetRunInfo 获取程序运行信息
+func GetRunInfo() {
+	ex, err := os.Executable()
+	if err != nil {
+		logrus.Error("获取当前程序执行目录失败。")
+		os.Exit(-1)
+	}
+
+	// 获取当前程序运行文件目录与文件名
+	CurrRunPath = filepath.Dir(ex)
+	CurrRunFileName = GetFileNameWithoutSuffix(ex)
 }
