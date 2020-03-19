@@ -4,7 +4,7 @@ filedir = "./logs/" #日志文件路径
 level = 5 #日志保存的时候的级别，默认是 Info 级别
 
 [db]
-dzsns = "root:root@(192.168.0.93:3306)/dzsns?parseTime=true&loc=Local&charset=utf8"
+server = "root:root@(192.168.0.93:3306)/dzsns?parseTime=true&loc=Local&charset=utf8"
 write_log = true # 数据库操作是否写日志。
 
 [redis]

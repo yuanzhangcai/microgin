@@ -31,7 +31,7 @@ $ make watch    # 用gowatch启动程序，默认的运行环境为local。以go
 ```
 $ micro api --handler=http
 
-$ ./microgin 
+$ ./microgin
 ```
 
 ### 2、gin web服务启动
@@ -48,14 +48,15 @@ $ curl 'http://localhost:8080/microgin/version'
 ### 返回结果：
 ```
 {
-    "data": {
-        "buildby": "zacyuan",
-        "buildtime": "2019-12-31T10:29:39",
-        "commit": "56e61f3a41e6c9e8681d6d7fe8f5b990db57147f",
+    "iRet": 0,
+    "jData": {
+        "build_time": "2020-03-19 20:58:55",
+        "build_user": "zacyuan",
+        "commit": "b3d7cc3c0b994ea167a1521104898cdf25b3c7a0",
         "env": "dev",
-        "version": "V0.0.1"
+        "go_version": "go version go1.14 darwin/amd64",
+        "version": ""
     },
-    "msg": "OK",
-    "ret": 0
+    "sMsg": "OK"
 }
 ```

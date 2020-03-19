@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	"github.com/sirupsen/logrus"
+	"github.com/yuanzhangcai/microgin/log"
 )
 
 // Redis redis组件
@@ -76,8 +76,8 @@ func InitRedis(server, password, prefix string) error {
 
 	pong, err := client.Ping().Result()
 	if err != nil {
-		logrus.Error(pong)
-		logrus.Error(err)
+		log.Error(pong)
+		log.Error(err)
 		return err
 	}
 	return nil

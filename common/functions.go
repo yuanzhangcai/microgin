@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	"github.com/yuanzhangcai/microgin/log"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 )
@@ -142,7 +142,7 @@ func GetFileNameWithoutSuffix(fullFilename string) string {
 func GetRunInfo() {
 	ex, err := os.Executable()
 	if err != nil {
-		logrus.Error("获取当前程序执行目录失败。")
+		log.Error("获取当前程序执行目录失败。")
 		os.Exit(-1)
 	}
 

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"github.com/yuanzhangcai/microgin/log"
 )
 
 // UsedTime 生成耗时日志中间件
@@ -53,7 +53,7 @@ func UsedTime() func(c *gin.Context) {
 			// Truncate in a golang < 1.8 safe way
 			param.Latency = param.Latency - param.Latency%time.Second
 		}
-		logrus.Info(fmt.Sprintf("UsedTime: %3d| %13v |%s %-7s %s body[%s] resp[%v] err[%s]",
+		log.Info(fmt.Sprintf("UsedTime: %3d| %13v |%s %-7s %s body[%s] resp[%v] err[%s]",
 			param.StatusCode,
 			param.Latency,
 			param.ClientIP,

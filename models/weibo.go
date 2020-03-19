@@ -3,9 +3,7 @@
 
 package models
 
-import (
-	"github.com/sirupsen/logrus"
-)
+import "github.com/yuanzhangcai/microgin/log"
 
 // OWeibo 微博数据结构体
 type OWeibo struct {
@@ -29,15 +27,15 @@ type OWeibo struct {
 
 // WeiboModel 微博表组件
 type WeiboModel struct {
-	BaseModel
+	Model
 }
 
 // GetWeiboTop 获取微博置顶数据
 func (c *WeiboModel) GetWeiboTop() ([]OWeibo, error) {
 	var list []OWeibo
-	err := dzsns.Limit(10).Find(&list).Error
+	err := db.Limit(10).Find(&list).Error
 	if err != nil {
-		logrus.Error("SQL执行失败。")
+		log.Error("SQL执行失败。")
 		return list, err
 	}
 	return list, nil

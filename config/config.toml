@@ -14,7 +14,7 @@ maxdays = 15 # 日志最大保留天数
 level = 4 #日志保存的时候的级别，默认是 Info 级别
 
 [db]
-dzsns = ""
+server = ""
 write_log = false # 数据库操作是否写日志。正式环境默认不写日志
 
 [redis]

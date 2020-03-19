@@ -11,9 +11,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/config"
-	"github.com/sirupsen/logrus"
 	"github.com/yuanzhangcai/microgin/controllers"
 	"github.com/yuanzhangcai/microgin/errors"
+	"github.com/yuanzhangcai/microgin/log"
 )
 
 const (
@@ -23,7 +23,7 @@ const (
 
 // Auth 生成登录中间件
 func Auth() func(*gin.Context) {
-	baseCtl := controllers.BaseCtl{}
+	baseCtl := controllers.Controller{}
 	checkURL := config.Get("login", "check_url").String("")
 
 	return func(ctx *gin.Context) {
@@ -34,12 +34,13 @@ func Auth() func(*gin.Context) {
 			return
 		}
 
+		baseCtl.SetCtx(ctx)
 		client := &http.Client{}
 		reqest, err := http.NewRequest("GET", checkURL, nil)
 		if err != nil {
 			ctx.Abort()
-			logrus.Error(err.Error())
-			baseCtl.Output(ctx, errors.ErrorCheckLoginCreateRequestFailed, "登录验证，创建请求失败")
+			log.Error(err.Error())
+			baseCtl.Output(errors.ErrorCheckLoginCreateRequestFailed, "登录验证，创建请求失败")
 			return
 		}
 
@@ -60,8 +61,8 @@ func Auth() func(*gin.Context) {
 		response, err := client.Do(reqest)
 		if err != nil {
 			ctx.Abort()
-			logrus.Error(err.Error())
-			baseCtl.Output(ctx, errors.ErrorCheckLoginSendRequestFailed, "登录验证，发送请求失败")
+			log.Error(err.Error())
+			baseCtl.Output(errors.ErrorCheckLoginSendRequestFailed, "登录验证，发送请求失败")
 			return
 		}
 		defer response.Body.Close()
@@ -69,8 +70,8 @@ func Auth() func(*gin.Context) {
 		body, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			ctx.Abort()
-			logrus.Error(err.Error())
-			baseCtl.Output(ctx, errors.ErrorCheckLoginReadResponseFailed, "登录验证，读取登录验证返回数据失败。")
+			log.Error(err.Error())
+			baseCtl.Output(errors.ErrorCheckLoginReadResponseFailed, "登录验证，读取登录验证返回数据失败。")
 			return
 		}
 
@@ -83,8 +84,8 @@ func Auth() func(*gin.Context) {
 		err = json.Unmarshal(body, &ret)
 		if err != nil {
 			ctx.Abort()
-			logrus.Error("获取session id 失败。")
-			baseCtl.Output(ctx, errors.ErrorCheckLoginUnmarshalJSONailed, "登录验证，解析登录验证返回数据失败。")
+			log.Error("获取session id 失败。")
+			baseCtl.Output(errors.ErrorCheckLoginUnmarshalJSONailed, "登录验证，解析登录验证返回数据失败。")
 			return
 		}
 
@@ -92,8 +93,8 @@ func Auth() func(*gin.Context) {
 			ctx.Next()
 		} else {
 			ctx.Abort()
-			logrus.Error("当前没有登录")
-			baseCtl.Output(ctx, errors.ErrorNoLogin, "当前没有登录")
+			log.Error("当前没有登录")
+			baseCtl.Output(errors.ErrorNoLogin, "当前没有登录")
 			return
 		}
 	}

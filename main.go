@@ -6,7 +6,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -17,8 +16,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/micro/go-micro/config"
 	"github.com/micro/go-micro/web"
-	"github.com/sirupsen/logrus"
 	"github.com/yuanzhangcai/microgin/common"
+	"github.com/yuanzhangcai/microgin/log"
 	"github.com/yuanzhangcai/microgin/middleware"
 	"github.com/yuanzhangcai/microgin/models"
 	"github.com/yuanzhangcai/microgin/routers"
@@ -32,7 +31,7 @@ func InitConfig() {
 	configFile := filepath + "config.toml"
 	err := config.LoadFile(configFile)
 	if err != nil {
-		logrus.Error("读取配置文件" + configFile + "失败。")
+		log.Error("读取配置文件" + configFile + "失败。")
 		os.Exit(-1)
 	}
 
@@ -40,11 +39,11 @@ func InitConfig() {
 	envFile := filepath + common.Env + ".toml"
 	err = config.LoadFile(envFile)
 	if err != nil {
-		logrus.Error("读取当前运行环境配置文件" + envFile + "失败。")
+		log.Error("读取当前运行环境配置文件" + envFile + "失败。")
 		os.Exit(-1)
 	}
 
-	logrus.Info("mode = " + config.Get("common", "mode").String(""))
+	log.Info("mode = " + config.Get("common", "mode").String(""))
 }
 
 // InitLog 初始化log
@@ -72,8 +71,7 @@ func InitLog() {
 		}
 	}
 
-	tools.InitLogrus(logSetting.FileDir, fileName, logSetting.Level, logSetting.MaxDays)
-
+	log.InitLog(logSetting.FileDir, fileName, logSetting.Level, logSetting.MaxDays)
 	return
 }
 
@@ -105,14 +103,14 @@ func init() {
 
 	// 初始化DB
 	if err := models.Init(); err != nil {
-		logrus.Error(err.Error())
+		log.Error(err.Error())
 		os.Exit(-1)
 	}
 
 	if err := tools.InitRedis(config.Get("redis", "server").String(""),
 		config.Get("redis", "password").String(""),
 		config.Get("redis", "prefix").String("")); err != nil {
-		logrus.Error(err.Error())
+		log.Error(err.Error())
 		os.Exit(-1)
 	}
 }
@@ -123,9 +121,14 @@ func main() {
 		// 正式环境时，将gin的模式，设置成ReleaseMode
 		gin.SetMode(gin.ReleaseMode)
 	} else {
-		go func() {
-			log.Println(http.ListenAndServe(":6063", nil))
-		}()
+
+		pprof := config.Get("pprof", "server").String("")
+		fmt.Println("pprof =", pprof)
+		if pprof != "" {
+			go func() {
+				http.ListenAndServe(pprof, nil)
+			}()
+		}
 	}
 
 	router := gin.New()
@@ -157,7 +160,7 @@ func main() {
 
 		// Run server
 		if err := service.Run(); err != nil {
-			logrus.Error(err)
+			log.Error(err)
 		}
 	} else {
 		// 以传统web服务启动

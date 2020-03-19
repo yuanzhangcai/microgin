@@ -1,6 +1,6 @@
 # 正式环境下专用的配置文件，由运维同学修改 db和redis信息。
 [db]
-dzsns = ""  # 正式环境数据库地址，格式如：root:root@(192.168.0.93:3306)/dzsns?parseTime=true&loc=Local&charset=utf8
+server = ""  # 正式环境数据库地址，格式如：root:root@(192.168.0.93:3306)/dzsns?parseTime=true&loc=Local&charset=utf8
 
 [redis]
 host =  ""  # 正式环境redis地址，格式如："192.168.0.93:6378"
