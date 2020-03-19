@@ -17,26 +17,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"github.com/yuanzhangcai/microgin/errors"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 )
-
-// ReturnJSON 返回json
-func ReturnJSON(ctx *gin.Context, ret errors.ErrorCode, msg string, data ...interface{}) {
-	params := make(map[string]interface{})
-	params["ret"] = ret
-	params["msg"] = msg
-	if len(data) > 0 {
-		params["data"] = data[0]
-	}
-
-	ctx.JSON(200, params)
-	ctx.Set("response", params)
-	return
-}
 
 // TimeToStr 时间戳转日期
 func TimeToStr(fmt string, value interface{}) string {

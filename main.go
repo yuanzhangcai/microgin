@@ -6,6 +6,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"path/filepath"
 	"time"
@@ -119,6 +122,10 @@ func main() {
 	if common.Env == common.ProdEnv {
 		// 正式环境时，将gin的模式，设置成ReleaseMode
 		gin.SetMode(gin.ReleaseMode)
+	} else {
+		go func() {
+			log.Println(http.ListenAndServe(":6063", nil))
+		}()
 	}
 
 	router := gin.New()

@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"github.com/yuanzhangcai/microgin/common"
 	"github.com/yuanzhangcai/microgin/models"
 	"github.com/yuanzhangcai/microgin/tools"
 )
@@ -27,10 +26,10 @@ func (c *WeiboCtl) GetTop(ctx *gin.Context) {
 		ctx.JSON(200, map[string]string{
 			"message": err.Error(),
 		})
-		common.ReturnJSON(ctx, -1, err.Error())
+		c.Output(ctx, -1, err.Error())
 		return
 	}
-	common.ReturnJSON(ctx, 0, "OK", list)
+	c.Output(ctx, 0, "OK", list)
 }
 
 // SetDemo php redis set demo
@@ -41,14 +40,14 @@ func (c *WeiboCtl) SetDemo(ctx *gin.Context) {
 		"age":  18,
 	}, time.Second*300)
 	if err != nil {
-		common.ReturnJSON(ctx, -1, err.Error())
+		c.Output(ctx, -1, err.Error())
 		return
 	}
 	if ret.Err() != nil {
-		common.ReturnJSON(ctx, -1, ret.Err().Error())
+		c.Output(ctx, -1, ret.Err().Error())
 		return
 	}
-	common.ReturnJSON(ctx, 0, "OK")
+	c.Output(ctx, 0, "OK")
 }
 
 // GetDemo php redis get demo
@@ -56,8 +55,8 @@ func (c *WeiboCtl) GetDemo(ctx *gin.Context) {
 	phpredis := tools.GetPhpRedisClient()
 	ret := phpredis.Get("demo")
 	if ret.Err() != nil {
-		common.ReturnJSON(ctx, -1, ret.Err().Error())
+		c.Output(ctx, -1, ret.Err().Error())
 		return
 	}
-	common.ReturnJSON(ctx, 0, ret.Val())
+	c.Output(ctx, 0, ret.Val())
 }
