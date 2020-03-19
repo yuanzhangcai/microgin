@@ -20,7 +20,6 @@ func UsedTime() func(c *gin.Context) {
 		path := c.Request.URL.Path
 		raw := c.Request.URL.RawQuery
 
-		logrus.Info("UsedTime: " + path)
 		// Process request
 		c.Next()
 
