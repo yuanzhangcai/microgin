@@ -109,9 +109,9 @@ func init() {
 		os.Exit(-1)
 	}
 
-	// 初始化php redis
-	err := tools.InitPhpRedis(config.Get("redis", "server").String(""), config.Get("redis", "password").String(""))
-	if err != nil {
+	if err := tools.InitRedis(config.Get("redis", "server").String(""),
+		config.Get("redis", "password").String(""),
+		config.Get("redis", "prefix").String("")); err != nil {
 		logrus.Error(err.Error())
 		os.Exit(-1)
 	}

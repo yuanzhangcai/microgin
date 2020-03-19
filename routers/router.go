@@ -23,9 +23,7 @@ func CreateRouters(router *gin.Engine) {
 		// 动态相关路由
 		weibo := nnc.Group("/weibo")
 		{
-			HandleGroup(weibo, "/GetTop", []string{"GET", "POST"}, weiboCtl.GetTop)   // 数据库查读demo
-			HandleGroup(weibo, "/SetDemo", []string{"GET", "POST"}, weiboCtl.SetDemo) // php redis set demo
-			HandleGroup(weibo, "/GetDemo", []string{"GET", "POST"}, weiboCtl.GetDemo) // php redis get demo
+			HandleGroup(weibo, "/GetTop", []string{"GET", "POST"}, weiboCtl.GetTop) // 数据库查读demo
 		}
 
 		// 动态相关路由

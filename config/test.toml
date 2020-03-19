@@ -12,4 +12,4 @@ host = "192.168.0.93:6378"
 password = "123456"
 
 [login]
-check_url = "http://10.0.0.93/m/index.php?s=/capi/check_login.html"
+check_url = ""

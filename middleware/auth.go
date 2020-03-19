@@ -28,6 +28,12 @@ func Auth() func(*gin.Context) {
 
 	return func(ctx *gin.Context) {
 
+		// 若登录检查url为空时，不做登录判断
+		if checkURL == "" {
+			ctx.Next()
+			return
+		}
+
 		client := &http.Client{}
 		reqest, err := http.NewRequest("GET", checkURL, nil)
 		if err != nil {

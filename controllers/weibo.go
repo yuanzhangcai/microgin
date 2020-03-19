@@ -4,12 +4,9 @@
 package controllers
 
 import (
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/yuanzhangcai/microgin/models"
-	"github.com/yuanzhangcai/microgin/tools"
 )
 
 // WeiboCtl 微博逻辑主件
@@ -30,33 +27,4 @@ func (c *WeiboCtl) GetTop(ctx *gin.Context) {
 		return
 	}
 	c.Output(ctx, 0, "OK", list)
-}
-
-// SetDemo php redis set demo
-func (c *WeiboCtl) SetDemo(ctx *gin.Context) {
-	phpredis := tools.GetPhpRedisClient()
-	ret, err := phpredis.Set("demo", map[string]interface{}{
-		"name": "zacyuan",
-		"age":  18,
-	}, time.Second*300)
-	if err != nil {
-		c.Output(ctx, -1, err.Error())
-		return
-	}
-	if ret.Err() != nil {
-		c.Output(ctx, -1, ret.Err().Error())
-		return
-	}
-	c.Output(ctx, 0, "OK")
-}
-
-// GetDemo php redis get demo
-func (c *WeiboCtl) GetDemo(ctx *gin.Context) {
-	phpredis := tools.GetPhpRedisClient()
-	ret := phpredis.Get("demo")
-	if ret.Err() != nil {
-		c.Output(ctx, -1, ret.Err().Error())
-		return
-	}
-	c.Output(ctx, 0, ret.Val())
 }

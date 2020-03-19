@@ -4,3 +4,9 @@ cmd_args:
 
 build_args:
     - -race
+
+excluded_paths:
+    - html
+    - logs
+    - docs
+    - .git

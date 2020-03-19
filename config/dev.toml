@@ -13,4 +13,4 @@ server = "redis:6379"
 password = "12345678"
 
 [login]
-check_url = "http://localhost:8889/m/index.php?s=/capi/check_login.html"
+check_url = ""
