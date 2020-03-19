@@ -29,5 +29,13 @@ test:
 # 编译正式运行环境程序
 prod:
 	go build -ldflags ${LDFLAGS}" -X ${PACKAGE}.Env=prod"
+	# CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags ${LDFLAGS}" -X ${PACKAGE}.Env=prod" -o microgin_macOS
+	# CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags ${LDFLAGS}" -X ${PACKAGE}.Env=prod" -o microgin_linux
+	# CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags ${LDFLAGS}" -X ${PACKAGE}.Env=prod" -o microgin_windows.exe
 
-.PHONY: install watch dev test prod
+# 编译并生成镜像文件
+image:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags ${LDFLAGS}" -X ${PACKAGE}.Env=prod"
+	docker build  -t microgin .
+
+.PHONY: install watch dev test prod image

@@ -48,10 +48,10 @@ pipeline {
                     sh 'rm -rf ./microgin.tar.gz'
                     sh 'rm -rf ${PACK_FOLDER}'
                     sh 'mkdir ${PACK_FOLDER}'
-                    sh 'cp -rf ./etc ${PACK_FOLDER}/'
+                    sh 'cp -rf ./config ${PACK_FOLDER}/'
                     sh 'cp -rf ./script ${PACK_FOLDER}/'
                     if (gitlabActionType == 'TAG_PUSH') {
-                        sh 'rm -rf ${PACK_FOLDER}/etc/prod.toml'
+                        sh 'rm -rf ${PACK_FOLDER}/config/prod.toml'
                         sh 'GOPROXY=https://goproxy.io; GOSUMDB=off; make prod;'
                     } else {
                         sh 'GOPROXY=https://goproxy.io; GOSUMDB=off; make test;'

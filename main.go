@@ -28,8 +28,8 @@ import (
 // InitConfig 载配置文件
 func InitConfig() {
 	// 加载通用配置文件
-	filepath := common.CurrRunPath + "/etc/"
-	configFile := filepath + common.CurrRunFileName + ".toml"
+	filepath := common.CurrRunPath + "/config/"
+	configFile := filepath + "config.toml"
 	err := config.LoadFile(configFile)
 	if err != nil {
 		logrus.Error("读取配置文件" + configFile + "失败。")

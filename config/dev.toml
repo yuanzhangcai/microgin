@@ -4,12 +4,12 @@ filedir = "./logs/" #日志文件路径
 level = 5 #日志保存的时候的级别，默认是 Info 级别
 
 [db]
-dzsns = "root:root@(127.0.0.1:3306)/bbs_local?parseTime=true&loc=Local&charset=utf8"
+dzsns = "root:root@(mysql:3306)/bbs_local?parseTime=true&loc=Local&charset=utf8"
 write_log = true # 数据库操作是否写日志。
 
 
 [redis]
-server = "127.0.0.1:6379"
+server = "redis:6379"
 password = "12345678"
 
 [login]
