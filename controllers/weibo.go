@@ -4,6 +4,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/yuanzhangcai/microgin/log"
 	"github.com/yuanzhangcai/microgin/models"
 )
@@ -18,7 +20,14 @@ type WeiboCtl struct {
 func (c *WeiboCtl) GetTop() {
 	log.Debug("Received Anything API request")
 
-	name := c.ctx.Query("name")
+	name := c.PostForm.Get("name")
+	for k, v := range *c.PostForm {
+		fmt.Printf("k:%v", k)
+		fmt.Printf("v:%v\n", v)
+
+		fmt.Printf("k:%T", k)
+		fmt.Printf("v:%T\n", v)
+	}
 
 	c.Output(0, "OK", name)
 }

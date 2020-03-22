@@ -4,6 +4,8 @@
 package controllers
 
 import (
+	"net/url"
+
 	"github.com/gin-gonic/gin"
 	"github.com/yuanzhangcai/microgin/common"
 	"github.com/yuanzhangcai/microgin/errors"
@@ -12,14 +14,15 @@ import (
 
 // ControllerInterface Controller接口定义
 type ControllerInterface interface {
-	SetCtx(*gin.Context)
+	Init(*gin.Context)
 	Prepare() bool
 	Finish()
 }
 
 // Controller 逻辑控制处理器基类组件
 type Controller struct {
-	ctx *gin.Context
+	ctx      *gin.Context
+	PostForm *url.Values
 }
 
 // Prepare 在主逻辑处理之前的前置操作
@@ -33,9 +36,14 @@ func (c *Controller) Prepare() bool {
 func (c *Controller) Finish() {
 }
 
-// SetCtx 设置Context
-func (c *Controller) SetCtx(ctx *gin.Context) {
+// Init 设置Context
+func (c *Controller) Init(ctx *gin.Context) {
 	c.ctx = ctx
+	err := c.ctx.Request.ParseForm()
+	if err != nil {
+		log.Panic("parse from failed")
+	}
+	c.PostForm = &c.ctx.Request.PostForm
 }
 
 // Anything 路由默认方法

@@ -34,7 +34,7 @@ func Auth() func(*gin.Context) {
 			return
 		}
 
-		baseCtl.SetCtx(ctx)
+		baseCtl.Init(ctx)
 		client := &http.Client{}
 		reqest, err := http.NewRequest("GET", checkURL, nil)
 		if err != nil {

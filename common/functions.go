@@ -6,10 +6,12 @@ package common
 import (
 	"bytes"
 	"crypto/md5"
+	"crypto/tls"
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -84,7 +86,7 @@ func GetRandomString(l int) string {
 	return string(result)
 }
 
-// GbkToUtf8 GBK?UTF8??
+// GbkToUtf8 GBK转UTF8
 func GbkToUtf8(s []byte) ([]byte, error) {
 	reader := transform.NewReader(bytes.NewReader(s), simplifiedchinese.GBK.NewDecoder())
 	data, err := ioutil.ReadAll(reader)
@@ -94,7 +96,7 @@ func GbkToUtf8(s []byte) ([]byte, error) {
 	return data, nil
 }
 
-// Utf8ToGbk UTF8?GBK??
+// Utf8ToGbk UTF8转GBK
 func Utf8ToGbk(s []byte) ([]byte, error) {
 	reader := transform.NewReader(bytes.NewReader(s), simplifiedchinese.GBK.NewEncoder())
 	data, err := ioutil.ReadAll(reader)
@@ -149,4 +151,83 @@ func GetRunInfo() {
 	// 获取当前程序运行文件目录与文件名
 	CurrRunPath = filepath.Dir(ex)
 	CurrRunFileName = GetFileNameWithoutSuffix(ex)
+}
+
+// ToString interface转string
+func ToString(value interface{}) string {
+	str := ""
+	switch value.(type) {
+	case string:
+		str = value.(string)
+	case int:
+		intVal := value.(int)
+		str = strconv.Itoa(intVal)
+	case int64:
+		str = strconv.FormatInt(value.(int64), 10)
+	case float64:
+		str = strconv.FormatFloat(value.(float64), 'f', -1, 64)
+	case error:
+		str = value.(error).Error()
+	}
+	return str
+}
+
+var transport *http.Transport // 全局变变更，用于保存长链接缓存。
+
+// HTTPParam HTTP请求参数
+type HTTPParam struct {
+	Method   string                  // http请求方法，POST/GET
+	URL      string                  // 请求URL
+	Data     string                  // 请求数据
+	Headers  *map[string]interface{} // header
+	Cookies  *map[string]interface{} // cookie
+	UseShort bool                    //使用短链接
+}
+
+// HTTP 发送http请求
+func HTTP(params HTTPParam) (string, int, error) {
+	if params.UseShort {
+		transport = &http.Transport{
+			TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
+			DisableKeepAlives: true,
+		}
+	} else if transport == nil {
+		transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+	}
+
+	body := bytes.NewBuffer([]byte(params.Data))
+	client := &http.Client{Transport: transport}
+	reqest, err := http.NewRequest(params.Method, params.URL, body)
+	if err != nil {
+		return "", 0, err
+	}
+
+	// 设置header
+	if params.Headers != nil {
+		for key, value := range *params.Headers {
+			strValue := ToString(value)
+			reqest.Header.Set(key, strValue)
+		}
+	}
+
+	// 设置cookie
+	if params.Cookies != nil {
+		for key, value := range *params.Cookies {
+			reqest.AddCookie(&http.Cookie{Name: key, Value: ToString(value), HttpOnly: true})
+		}
+	}
+
+	response, err := client.Do(reqest)
+	if err != nil {
+		return "", 0, err
+	}
+	defer response.Body.Close()
+
+	resBody, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", 0, err
+	}
+	return string(resBody), response.StatusCode, nil
 }

@@ -50,7 +50,7 @@ func HadleMain(ctl interface{}, method string) func(*gin.Context) {
 		}
 
 		// 设置请求上下文
-		temp.SetCtx(ctx)
+		temp.Init(ctx)
 
 		// 逻辑提前结束
 		if !temp.Prepare() {
