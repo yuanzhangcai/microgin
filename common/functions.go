@@ -186,19 +186,23 @@ type HTTPParam struct {
 
 // HTTP 发送http请求
 func HTTP(params HTTPParam) (string, int, error) {
+	var t *http.Transport
 	if params.UseShort {
-		transport = &http.Transport{
+		t = &http.Transport{
 			TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
 			DisableKeepAlives: true,
 		}
-	} else if transport == nil {
-		transport = &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	} else {
+		if transport == nil {
+			transport = &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			}
 		}
+		t = transport
 	}
 
 	body := bytes.NewBuffer([]byte(params.Data))
-	client := &http.Client{Transport: transport}
+	client := &http.Client{Transport: t}
 	reqest, err := http.NewRequest(params.Method, params.URL, body)
 	if err != nil {
 		return "", 0, err
