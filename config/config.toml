@@ -9,7 +9,7 @@ address = "0.0.0.0:8080" # gin web服务启动地址
 service_regisger = "mdns" # 微服务注册方式：etcd\mdns
 
 [log] # 日志相关配置
-filedir = "/data/logs/" #日志文件路径
+filedir = "/data/logs/microgin" #日志文件路径
 maxdays = 15 # 日志最大保留天数
 level = 4 #日志保存的时候的级别，默认是 Info 级别
 

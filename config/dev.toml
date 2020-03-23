@@ -1,6 +1,5 @@
 # 本地环境下专用的配置文件
 [log] # 日志相关配置
-filedir = "/Users/zacyuan/logs/microgin/" #日志文件路径
 level = 5 #日志保存的时候的级别，默认是 Info 级别
 
 [db]
