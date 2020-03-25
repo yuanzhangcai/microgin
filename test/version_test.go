@@ -68,17 +68,44 @@ func TestVersion(t *testing.T) {
 	t.Log("Success")
 }
 
+// go test -benchmem -run version_test.go -bench ^BenchmarkVersion$
 func BenchmarkVersion(b *testing.B) {
-	b.Run("version", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			send(b, server+"/microgin/version", "")
-		}
+	b.Run("gintest", func(b *testing.B) {
+		// for i := 0; i < b.N; i++ {
+		// 	send(b, "http://127.0.0.1:11000/microgin/version", "")
+		// }
 
 		// 并发测试
-		// b.RunParallel(func(pb *testing.PB) {
-		// 	for pb.Next() {
-		// 		send(b, server+"/microgin/version", "")
-		// 	}
-		// })
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				send(b, "http://127.0.0.1:11000/microgin/version", "")
+			}
+		})
+	})
+
+	b.Run("beegotest", func(b *testing.B) {
+		// for i := 0; i < b.N; i++ {
+		// 	send(b, "http://127.0.0.1:11001/beegotest", "")
+		// }
+
+		// 并发测试
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				send(b, "http://127.0.0.1:11001/beegotest", "")
+			}
+		})
+	})
+
+	b.Run("microgin", func(b *testing.B) {
+		// for i := 0; i < b.N; i++ {
+		// 	send(b, server+"/microgin/version", "")
+		// }
+
+		// 并发测试
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				send(b, server+"/microgin/version", "")
+			}
+		})
 	})
 }
