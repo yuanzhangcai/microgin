@@ -78,6 +78,15 @@ func getFileInfo() string {
 // 	}).Error(msg)
 // }
 
+// NewEngineLog 生成引擎专用log
+func NewEngineLog(serial string, nid uint64) *logrus.Entry {
+	return logrus.WithFields(logrus.Fields{
+		"bfile":   getFileInfo(),
+		"bserial": serial,
+		"bnid":    nid,
+	})
+}
+
 // Trace Trace级别日志
 func Trace(args ...interface{}) {
 	logrus.WithFields(logrus.Fields{
